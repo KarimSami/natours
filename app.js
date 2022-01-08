@@ -1,3 +1,4 @@
+const { application } = require('express');
 const express = require('express');
 const fs = require('fs');
 const app = express();
@@ -39,6 +40,22 @@ app.post('/api/v1/tours/', (req, res) => {
       });
     }
   );
+});
+
+app.get('/api/v1/tours/:id', (req, res) => {
+  const id = +req.params.id;
+  const tour = tours.find((tour) => tour.id === id);
+  if (!tour)
+    res.status(404).json({
+      status: HTTP_RESP_STATUS.FAIL,
+      message: 'No Such Tour',
+    });
+
+  res.status(200).json({
+    status: HTTP_RESP_STATUS.SUCCESS,
+    results: 1,
+    data: { tour },
+  });
 });
 
 app.listen(port, () => {
