@@ -23,28 +23,39 @@ app.get('/api/v1/tours', (req, res) => {
 app.post('/api/v1/tours/', (req, res) => {
   const tour = req.body;
   tour['id'] = tours.length;
+  try {
+    addTour(tour);
+    res.status(201).json({
+      status: HTTP_RESP_STATUS.SUCCESS,
+      data: tour,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      status: HTTP_RESP_STATUS.ERROR,
+    });
+  }
+});
 
+const getTourById = (id) => {
+  return tours.find((tour) => tour.id === id);
+};
+
+const addTour = (tour) => {
   fs.writeFile(
     `${__dirname}/dev-data/data/tours-simple.json`,
     JSON.stringify([...tours, tour]),
     (err) => {
       if (err) {
-        console.log(e);
-        res.status(500).json({
-          status: HTTP_RESP_STATUS.ERROR,
-        });
+        throw new Error();
       }
-      res.status(201).json({
-        status: HTTP_RESP_STATUS.SUCCESS,
-        data: tour,
-      });
     }
   );
-});
+};
 
 app.get('/api/v1/tours/:id', (req, res) => {
   const id = +req.params.id;
-  const tour = tours.find((tour) => tour.id === id);
+  const tour = getTourById(id);
   if (!tour)
     res.status(404).json({
       status: HTTP_RESP_STATUS.FAIL,
@@ -55,6 +66,19 @@ app.get('/api/v1/tours/:id', (req, res) => {
     status: HTTP_RESP_STATUS.SUCCESS,
     results: 1,
     data: { tour },
+  });
+});
+
+app.patch('/api/v1/tours/:id', (req, res) => {
+  if (!getTourById(+req.params.id))
+    res.status(404).json({
+      status: HTTP_RESP_STATUS.FAIL,
+    });
+  res.status(200).json({
+    status: HTTP_RESP_STATUS.SUCCESS,
+    data: {
+      tour: 'Updated tour',
+    },
   });
 });
 
