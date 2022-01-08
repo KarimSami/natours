@@ -4,27 +4,30 @@ const fs = require('fs');
 const app = express();
 const HTTP_RESP_STATUS = require('./constants/http-resp-status');
 
-app.use(express.json()); //this is a middle waire provided by express library and used by the app to parse the request body on the request object
-
+app.use(express.json());
 const port = 8000;
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, 'utf-8')
 );
 
-app.get('/api/v1/tours', (req, res) => {
+const getAllTours = (req, res) => {
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
     results: tours.length,
     data: { tours },
   });
-});
+};
 
-app.post('/api/v1/tours/', (req, res) => {
+const getTourById = (id) => {
+  return tours.find((tour) => tour.id === id);
+};
+
+const createTour = (req, res) => {
   const tour = req.body;
   tour['id'] = tours.length;
   try {
-    addTour(tour);
+    writeTourToFile(tour);
     res.status(201).json({
       status: HTTP_RESP_STATUS.SUCCESS,
       data: tour,
@@ -35,13 +38,8 @@ app.post('/api/v1/tours/', (req, res) => {
       status: HTTP_RESP_STATUS.ERROR,
     });
   }
-});
-
-const getTourById = (id) => {
-  return tours.find((tour) => tour.id === id);
 };
-
-const addTour = (tour) => {
+const writeTourToFile = (tour) => {
   fs.writeFile(
     `${__dirname}/dev-data/data/tours-simple.json`,
     JSON.stringify([...tours, tour]),
@@ -53,7 +51,7 @@ const addTour = (tour) => {
   );
 };
 
-app.get('/api/v1/tours/:id', (req, res) => {
+const getTour = (req, res) => {
   const id = +req.params.id;
   const tour = getTourById(id);
   if (!tour)
@@ -67,9 +65,9 @@ app.get('/api/v1/tours/:id', (req, res) => {
     results: 1,
     data: { tour },
   });
-});
+};
 
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateTour = (req, res) => {
   if (!getTourById(+req.params.id))
     res.status(404).json({
       status: HTTP_RESP_STATUS.FAIL,
@@ -80,7 +78,11 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       tour: 'Updated tour',
     },
   });
-});
+};
+
+app.route('/api/v1/tours').get(getAllTours).post(createTour);
+
+app.route('/api/v1/tours/:id').get(getTour).patch(updateTour);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
