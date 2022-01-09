@@ -5,6 +5,12 @@ const app = express();
 const HTTP_RESP_STATUS = require('./constants/http-resp-status');
 
 app.use(express.json());
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 const port = 8000;
 
 const tours = JSON.parse(
