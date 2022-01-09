@@ -1,9 +1,13 @@
-const { application } = require('express');
-const express = require('express');
 const fs = require('fs');
-const app = express();
+const express = require('express');
+const morgan = require('morgan');
 const HTTP_RESP_STATUS = require('./constants/http-resp-status');
 
+const app = express();
+const port = 8000;
+
+// middlewares
+app.use(morgan('dev'));
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -11,8 +15,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const port = 8000;
-
+// Route handlers
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, 'utf-8')
 );
@@ -86,10 +89,12 @@ const updateTour = (req, res) => {
   });
 };
 
+// routers
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
 
 app.route('/api/v1/tours/:id').get(getTour).patch(updateTour);
 
+// start server
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
 });
