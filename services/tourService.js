@@ -13,7 +13,7 @@ exports.getAllTours = (req, res) => {
   });
 };
 
-exports.getTourById = (id) => {
+getTourById = (id) => {
   return tours.find((tour) => tour.id === id);
 };
 
