@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
-const tourRouter = require('./router/tourRouter');
-const userRouter = require('./router/userRouter');
+const tourController = require('./controllers/tourController');
+const userController = require('./controllers/userController');
 
 const app = express();
 const port = 8000;
@@ -16,8 +16,8 @@ app.use((req, res, next) => {
 });
 
 // routers
-app.use('/api/v1/tours', tourRouter);
-app.use('/api/v1/users', userRouter);
+app.use('/api/v1/tours', tourController);
+app.use('/api/v1/users', userController);
 
 // start server
 app.listen(port, () => {
