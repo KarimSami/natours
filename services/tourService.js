@@ -7,7 +7,7 @@ const tours = JSON.parse(
 );
 exports.checkId = (req, res, next, id) => {
   if (+id > tours.length)
-    res.status(404).json({
+    return res.status(404).json({
       status: HTTP_RESP_STATUS.FAIL,
       message: 'No Such Tour',
     });
