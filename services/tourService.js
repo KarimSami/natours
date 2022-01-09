@@ -14,6 +14,16 @@ exports.checkId = (req, res, next, id) => {
   next();
 };
 
+exports.checkBody = (req, res, next) => {
+  exports.body = req.body;
+  if (!(body.name && body.price))
+    return res.status(400).json({
+      status: 'error',
+      message: 'Body is incomplete',
+    });
+  next();
+};
+
 exports.getAllTours = (req, res) => {
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
