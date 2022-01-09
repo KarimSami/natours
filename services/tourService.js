@@ -5,16 +5,21 @@ const HTTP_RESP_STATUS = require('../constants/http-resp-status');
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, 'utf-8')
 );
+exports.checkId = (req, res, next, id) => {
+  if (+id > tours.length)
+    res.status(404).json({
+      status: HTTP_RESP_STATUS.FAIL,
+      message: 'No Such Tour',
+    });
+  next();
+};
+
 exports.getAllTours = (req, res) => {
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
     results: tours.length,
     data: { tours },
   });
-};
-
-getTourById = (id) => {
-  return tours.find((tour) => tour.id === id);
 };
 
 exports.createTour = (req, res) => {
@@ -47,25 +52,14 @@ const writeTourToFile = (tour) => {
 
 exports.getTour = (req, res) => {
   const id = +req.params.id;
-  const tour = getTourById(id);
-  if (!tour)
-    res.status(404).json({
-      status: HTTP_RESP_STATUS.FAIL,
-      message: 'No Such Tour',
-    });
-
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
     results: 1,
-    data: { tour },
+    data: { tour: tours[id] },
   });
 };
 
 exports.updateTour = (req, res) => {
-  if (!getTourById(+req.params.id))
-    res.status(404).json({
-      status: HTTP_RESP_STATUS.FAIL,
-    });
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
     data: {
