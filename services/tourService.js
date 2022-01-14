@@ -1,40 +1,20 @@
-const express = require('express');
-const fs = require('fs');
 const HTTP_RESP_STATUS = require('../constants/http-resp-status');
 const Tour = require('../models/tour.model');
 
-exports.getAllTours = async (req, res) => {
-  const tours = await Tour.find();
-  res.status(200).json({
-    status: HTTP_RESP_STATUS.SUCCESS,
-    results: tours.length,
-    data: { tours },
-  });
+exports.getAllTours = async () => {
+  return await Tour.find();
 };
 
-exports.createTour = async (req, res) => {
-  const tour = new Tour(req.body);
+exports.createTour = async (tour) => {
   try {
-    await tour.save();
-    res.status(201).json({
-      status: HTTP_RESP_STATUS.SUCCESS,
-      data: tour,
-    });
+    return await new Tour(tour).save();
   } catch (e) {
-    res.status(500).json({
-      status: HTTP_RESP_STATUS.ERROR,
-    });
+    return e;
   }
 };
 
-exports.getTour = async (req, res) => {
-  const id = req.params.id;
-  const tour = await Tour.findById(id);
-  res.status(200).json({
-    status: HTTP_RESP_STATUS.SUCCESS,
-    results: 1,
-    data: { tour },
-  });
+exports.getTourById = async (id) => {
+  return await Tour.findById(id);
 };
 
 exports.updateTour = (req, res) => {
