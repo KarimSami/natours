@@ -53,3 +53,17 @@ exports.updateTour = async (req, res) => {
     });
   }
 };
+
+exports.deleteTour = async (req, res) => {
+  const id = req.params.id;
+  try {
+    await tourServices.deleteTour(id);
+    res.status(200).json({
+      status: HTTP_RESP_STATUS.SUCCESS,
+    });
+  } catch (e) {
+    res.status(500).json({
+      status: HTTP_RESP_STATUS.ERROR,
+    });
+  }
+};
