@@ -22,3 +22,7 @@ exports.updateTour = async (id, payload) => {
     runValidators: true,
   });
 };
+
+exports.deleteTour = async (id) => {
+  return await Tour.findByIdAndDelete(id);
+};
