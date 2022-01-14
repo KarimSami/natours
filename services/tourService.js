@@ -7,7 +7,7 @@ exports.getAllTours = async () => {
 
 exports.createTour = async (tour) => {
   try {
-    return await new Tour(tour).save();
+    return await Tour.create(tour);
   } catch (e) {
     return e;
   }

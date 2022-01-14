@@ -17,7 +17,6 @@ exports.createTour = async (req, res) => {
   const tour = req.body;
   try {
     const resp = await tourServices.createTour(tour);
-    console.log(resp);
     res.status(201).json({
       status: HTTP_RESP_STATUS.SUCCESS,
       data: tour,
