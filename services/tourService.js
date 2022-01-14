@@ -1,18 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const HTTP_RESP_STATUS = require('../constants/http-resp-status');
-
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, 'utf-8')
-);
-exports.checkId = (req, res, next, id) => {
-  if (+id > tours.length)
-    return res.status(404).json({
-      status: HTTP_RESP_STATUS.FAIL,
-      message: 'No Such Tour',
-    });
-  next();
-};
+const Tour = require('../models/tour.model');
 
 exports.checkBody = (req, res, next) => {
   exports.body = req.body;
@@ -24,7 +13,8 @@ exports.checkBody = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = (req, res) => {
+exports.getAllTours = async (req, res) => {
+  const tours = await Tour.find();
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
     results: tours.length,
@@ -60,12 +50,13 @@ const writeTourToFile = (tour) => {
   );
 };
 
-exports.getTour = (req, res) => {
-  const id = +req.params.id;
+exports.getTour = async (req, res) => {
+  const id = req.params.id;
+  const tour = await Tour.findById(id);
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
     results: 1,
-    data: { tour: tours[id] },
+    data: { tour },
   });
 };
 
