@@ -1,4 +1,3 @@
-const HTTP_RESP_STATUS = require('../constants/http-resp-status');
 const Tour = require('../models/tour.model');
 
 exports.getAllTours = async () => {
@@ -17,11 +16,9 @@ exports.getTourById = async (id) => {
   return await Tour.findById(id);
 };
 
-exports.updateTour = (req, res) => {
-  res.status(200).json({
-    status: HTTP_RESP_STATUS.SUCCESS,
-    data: {
-      tour: 'Updated tour',
-    },
+exports.updateTour = async (id, payload) => {
+  return await Tour.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
   });
 };

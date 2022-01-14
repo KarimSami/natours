@@ -1,4 +1,3 @@
-const express = require('express');
 const HTTP_RESP_STATUS = require('../constants/http-resp-status');
 const tourServices = require('../services/tourService');
 
@@ -16,7 +15,7 @@ exports.getAllTours = async (req, res) => {
 exports.createTour = async (req, res) => {
   const tour = req.body;
   try {
-    const resp = await tourServices.createTour(tour);
+    await tourServices.createTour(tour);
     res.status(201).json({
       status: HTTP_RESP_STATUS.SUCCESS,
       data: tour,
@@ -36,4 +35,21 @@ exports.getTourById = async (req, res) => {
     results: 1,
     data: { tour },
   });
+};
+
+exports.updateTour = async (req, res) => {
+  const id = req.params.id;
+  const payload = req.body;
+  try {
+    const newTour = await tourServices.updateTour(id, payload);
+    if (!newTour) throw new Error();
+    res.status(201).json({
+      status: HTTP_RESP_STATUS.SUCCESS,
+      tour: newTour,
+    });
+  } catch (e) {
+    res.status(500).json({
+      status: HTTP_RESP_STATUS.ERROR,
+    });
+  }
 };
