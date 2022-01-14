@@ -4,10 +4,7 @@ const tourServices = require('../services/tourService');
 
 // router.param('id', tourServices.checkId);
 
-router
-  .route('/')
-  .get(tourServices.getAllTours)
-  .post(tourServices.checkBody, tourServices.createTour);
+router.route('/').get(tourServices.getAllTours).post(tourServices.createTour);
 router.route('/:id').get(tourServices.getTour).patch(tourServices.updateTour);
 
 module.exports = router;
