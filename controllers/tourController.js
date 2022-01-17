@@ -8,8 +8,9 @@ exports.getAllTours = async (req, res) => {
 
   const tours = await tourServices.getAllTours(
     filter,
-    req.query.sort ?? undefined,
-    req.query.fields ?? undefined
+    req.query.sort ?? '-createdAt',
+    req.query.fields ?? '-__v',
+    { page: req.query.page || 1, pageSize: req.query.limit || 10 }
   );
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
