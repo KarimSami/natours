@@ -1,24 +1,59 @@
 const Tour = require('../models/tour.model');
 
-exports.getAllTours = async (filter, sort, fields, pagination) => {
-  const exculdedFields = ['page', 'sort', 'limit', ' fileds'];
-  exculdedFields.forEach((field) => delete filter[field]);
-  let queryString = JSON.stringify(filter);
-  queryString = queryString.replace(
-    /\b(gte|gt|lt|lte)\b/g,
-    (match) => `$${match}`
-  );
+class APIFeatures {
+  constructor(query, queryString) {
+    this.query = query;
+    this.queryString = queryString;
+  }
 
-  let query = Tour.find(JSON.parse(queryString));
-  const sortBy = sort.split(',').join(' ');
-  const selectedFields = fields.split(',').join(' ');
-  query
-    .sort(sortBy)
-    .select(selectedFields)
-    .skip((pagination.page - 1) * pagination.pageSize)
-    .limit(pagination.pageSize);
+  filter() {
+    const reqQuery = this.queryString;
+    const exculdedFields = ['page', 'sort', 'limit', ' fields'];
+    exculdedFields.forEach((field) => delete reqQuery[field]);
+    let queryString = JSON.stringify(reqQuery);
+    queryString = queryString.replace(
+      /\b(gte|gt|lt|lte)\b/g,
+      (match) => `$${match}`
+    );
+    this.query = this.query.find(JSON.parse(queryString));
+    return this;
+  }
+  sort(defaultSort) {
+    let sortBy;
+    if (this.queryString.sort)
+      sortBy = this.queryString.sort.split(',').join(' ');
+    else sortBy = defaultSort;
+    this.query = this.query.sort(sortBy);
+    return this;
+  }
+  select(defaultSelect) {
+    let selectedFields;
+    if (this.queryString.fields)
+      selectedFields = this.queryString.fields.split(',').join(' ');
+    else selectedFields = defaultSelect;
+    this.query = this.query.select(selectedFields);
+    return this;
+  }
+  paginate(defaultPagination) {
+    const pagination = {
+      page: this.queryString.page ?? defaultPagination.page,
+      pageSize: this.queryString.pageSize ?? defaultPagination.pageSize,
+    };
 
-  return await query;
+    this.query = this.query
+      .skip((pagination.page - 1) * pagination.pageSize)
+      .limit(pagination.pageSize);
+    return this;
+  }
+}
+
+exports.getAllTours = async (reqQuery) => {
+  const features = new APIFeatures(Tour.find(), reqQuery)
+    .filter()
+    .sort('-createdAt')
+    .select('-__v')
+    .paginate({ page: 1, pageSize: 10 });
+  return await features.query;
 };
 
 exports.createTour = async (tour) => {

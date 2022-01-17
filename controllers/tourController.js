@@ -4,14 +4,7 @@ const tourServices = require('../services/tourService');
 // router.param('id', tourServices.checkId);
 
 exports.getAllTours = async (req, res) => {
-  const filter = { ...req.query };
-
-  const tours = await tourServices.getAllTours(
-    filter,
-    req.query.sort ?? '-createdAt',
-    req.query.fields ?? '-__v',
-    { page: req.query.page || 1, pageSize: req.query.limit || 10 }
-  );
+  const tours = await tourServices.getAllTours({ ...req.query });
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
     results: tours.length,
