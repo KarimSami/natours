@@ -1,7 +1,10 @@
 const Tour = require('../models/tour.model');
 
-exports.getAllTours = async () => {
-  return await Tour.find();
+exports.getAllTours = async (filter) => {
+  const exculdedFields = ['page', 'sort', 'limit', ' fileds'];
+  exculdedFields.forEach((field) => delete filter[field]);
+  const query = Tour.find(filter);
+  return await query;
 };
 
 exports.createTour = async (tour) => {
