@@ -3,7 +3,12 @@ const Tour = require('../models/tour.model');
 exports.getAllTours = async (filter) => {
   const exculdedFields = ['page', 'sort', 'limit', ' fileds'];
   exculdedFields.forEach((field) => delete filter[field]);
-  const query = Tour.find(filter);
+  let queryString = JSON.stringify(filter);
+  queryString = queryString.replace(
+    /\b(gte|gt|lt|lte)\b/g,
+    (match) => `$${match}`
+  );
+  const query = Tour.find(JSON.parse(queryString));
   return await query;
 };
 
