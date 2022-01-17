@@ -1,6 +1,6 @@
 const Tour = require('../models/tour.model');
 
-exports.getAllTours = async (filter) => {
+exports.getAllTours = async (filter, sort) => {
   const exculdedFields = ['page', 'sort', 'limit', ' fileds'];
   exculdedFields.forEach((field) => delete filter[field]);
   let queryString = JSON.stringify(filter);
@@ -8,7 +8,15 @@ exports.getAllTours = async (filter) => {
     /\b(gte|gt|lt|lte)\b/g,
     (match) => `$${match}`
   );
-  const query = Tour.find(JSON.parse(queryString));
+
+  let query = Tour.find(JSON.parse(queryString));
+  let sortBy;
+  if (sort) {
+    sortBy = sort.split(',').join(' ');
+  } else {
+    sortBy = '-createdAt';
+  }
+  query.sort(sortBy);
   return await query;
 };
 

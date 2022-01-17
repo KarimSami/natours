@@ -6,7 +6,10 @@ const tourServices = require('../services/tourService');
 exports.getAllTours = async (req, res) => {
   const filter = { ...req.query };
 
-  const tours = await tourServices.getAllTours(filter);
+  const tours = await tourServices.getAllTours(
+    filter,
+    req.query.sort ?? undefined
+  );
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
     results: tours.length,
