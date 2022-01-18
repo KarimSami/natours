@@ -67,3 +67,17 @@ exports.deleteTour = async (req, res) => {
     });
   }
 };
+
+exports.getTourStats = async (req, res) => {
+  try {
+    const stats = await tourServices.getTourStats();
+    res.status(200).json({
+      status: HTTP_RESP_STATUS.SUCCESS,
+      data: stats,
+    });
+  } catch (e) {
+    res.status(500).json({
+      status: HTTP_RESP_STATUS.ERROR,
+    });
+  }
+};

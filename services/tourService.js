@@ -32,3 +32,29 @@ exports.updateTour = async (id, payload) => {
 exports.deleteTour = async (id) => {
   return await Tour.findByIdAndDelete(id);
 };
+
+exports.getTourStats = async () => {
+  const stats = await Tour.aggregate([
+    {
+      $match: { ratingsAverage: { $gte: 4.5 } },
+    },
+    {
+      $group: {
+        _id: { $toUpper: '$difficulty' },
+        // _id: '$ratingsQuantity',
+        numRating: { $sum: '$ratingsQuantity' },
+        numTours: { $sum: 1 },
+        avgRating: { $avg: '$ratingsAverage' },
+        avgPrice: { $avg: '$price' },
+        minPrice: { $min: '$price' },
+        maxPrice: { $max: '$price' },
+      },
+    },
+    {
+      $sort: {
+        avgPrice: 1,
+      },
+    },
+  ]);
+  return stats;
+};
