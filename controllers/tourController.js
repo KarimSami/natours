@@ -73,7 +73,22 @@ exports.getTourStats = async (req, res) => {
     const stats = await tourServices.getTourStats();
     res.status(200).json({
       status: HTTP_RESP_STATUS.SUCCESS,
-      data: stats,
+      data: { stats },
+    });
+  } catch (e) {
+    res.status(500).json({
+      status: HTTP_RESP_STATUS.ERROR,
+    });
+  }
+};
+
+exports.getMonthlyPlan = async (req, res) => {
+  try {
+    const year = +req.params.year;
+    const plan = await tourServices.getMonthlyPlan(year);
+    res.status(200).json({
+      status: HTTP_RESP_STATUS.SUCCESS,
+      data: { plan },
     });
   } catch (e) {
     res.status(500).json({
