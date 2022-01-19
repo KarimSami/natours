@@ -15,10 +15,10 @@ exports.getAllTours = async (req, res) => {
 exports.createTour = async (req, res) => {
   const tour = req.body;
   try {
-    await tourServices.createTour(tour);
+    const createdTour = await tourServices.createTour(tour);
     res.status(201).json({
       status: HTTP_RESP_STATUS.SUCCESS,
-      data: tour,
+      data: createdTour,
     });
   } catch (e) {
     res.status(500).json({
