@@ -32,7 +32,6 @@ exports.getTourById = async (req, res) => {
   const tour = await tourServices.getTourById(id);
   res.status(200).json({
     status: HTTP_RESP_STATUS.SUCCESS,
-    results: 1,
     data: { tour },
   });
 };
