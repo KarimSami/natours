@@ -11,12 +11,14 @@
     "slugify": "^1.6.5"
   },
   "devDependencies": {
+    "ndb": "^1.1.5",
     "nodemon": "^2.0.15"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js"
+    "start:prod": "NODE_ENV=production nodemon server.js",
+    "debug":"ndb server.js"
   },
   "author": "Karim",
   "license": "ISC"
