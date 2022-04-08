@@ -11,11 +11,7 @@ exports.getAllTours = async (reqQuery) => {
 };
 
 exports.createTour = async (tour) => {
-  try {
-    return await Tour.create(tour);
-  } catch (e) {
-    return e;
-  }
+  return await Tour.create(tour);
 };
 
 exports.getTourById = async (id) => {
