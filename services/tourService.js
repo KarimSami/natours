@@ -26,7 +26,7 @@ exports.updateTour = async (id, payload) => {
 };
 
 exports.deleteTour = async (id) => {
-  return await Tour.findByIdAndDelete(id);
+  await Tour.findByIdAndDelete(id);
 };
 
 exports.getTourStats = async () => {
