@@ -12,3 +12,7 @@ mongoose
 app.listen(process.env.PORT, () => {
   console.log(`App running on port ${process.env.PORT}`);
 });
+
+process.on('unhandledRejection', (err) => {
+  process.exit(1);
+});
